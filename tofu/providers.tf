@@ -21,11 +21,7 @@ terraform {
   }
 }
 
-# credentials are read from the environment: HARNESS_ACCOUNT_ID and
-# HARNESS_PLATFORM_API_KEY (note: correct spelling - the repo's .env has a
-# typo, "HARNESS_PLAFORM_API_KEY". source ../scripts/load-env.sh instead of
-# ../.env directly to get the corrected export). leaving this block empty
-# lets the provider fall back to its built-in env var defaults.
+# credentials come from the environment (HARNESS_ACCOUNT_ID / HARNESS_PLATFORM_API_KEY) - source scripts/load-env.sh first.
 provider "harness" {
   endpoint = var.harness_endpoint
 }

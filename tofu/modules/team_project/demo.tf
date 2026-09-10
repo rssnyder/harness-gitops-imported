@@ -1,13 +1,4 @@
-# minimal demo Argo CD application per team - for validating that the
-# namespace/project isolation set up in main.tf actually works end to end.
-# mirrors the pattern in ../../../../harness-account-iac/modules/project/gitops.tf
-# (repository -> environment -> environment/cluster mapping -> service ->
-# application), scaled down to a single Application (one team, one
-# namespace, one cluster) instead of an ApplicationSet across many clusters.
-#
-# the demo repository (like the shared cluster) is registered once at org
-# scope in ../../repository.tf - Harness rejects registering the same repo
-# URL more than once per agent, same as clusters.
+# minimal demo Argo CD application per team, for end-to-end validation of the namespace isolation set up in main.tf.
 
 resource "harness_platform_environment" "demo" {
   org_id     = var.org_id
@@ -19,9 +10,7 @@ resource "harness_platform_environment" "demo" {
   tags       = ["source:opentofu"]
 }
 
-# links the shared org-level in-cluster into this team's project/environment
-# - required by the gitops-enabled deployment stage / for the Application
-# below to be considered part of this environment in the UI.
+# links the shared in-cluster into this team's project/environment.
 resource "harness_platform_environment_clusters_mapping" "demo" {
   org_id     = var.org_id
   project_id = harness_platform_project.this.id
@@ -36,9 +25,7 @@ resource "harness_platform_environment_clusters_mapping" "demo" {
   }
 }
 
-# gitops-enabled service reference so the Application below shows up
-# against a Harness service/environment pair (harness.io/serviceRef +
-# harness.io/envRef labels on the Application).
+# gitops-enabled service reference so the Application shows up against a Harness service/environment pair.
 resource "harness_platform_service" "guestbook" {
   org_id     = var.org_id
   project_id = harness_platform_project.this.id
@@ -92,9 +79,7 @@ resource "harness_platform_gitops_applications" "guestbook" {
 
       destination {
         server = var.in_cluster_server
-        # namespace already exists (created by kubernetes_namespace.this) -
-        # the AppProject's destinations block is what actually confines this
-        # to var.team; CreateNamespace is left off since we manage it via tofu.
+        # namespace already exists; the AppProject's destinations block is what actually confines this.
         namespace = var.team
       }
 

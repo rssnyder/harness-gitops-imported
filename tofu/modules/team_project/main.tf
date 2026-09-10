@@ -1,14 +1,4 @@
-# each team gets: its own k8s namespace, its own Harness project, and its
-# own Argo CD "AppProject" - restricted to deploying only into that
-# namespace - registered against the shared org-level agent. the physical
-# cluster itself is registered exactly once, at org scope (see
-# ../../cluster.tf) - Harness rejects registering the same server URL as a
-# GitOps Cluster more than once per agent. isolation between teams is
-# therefore enforced entirely by each AppProject's `destinations` (limited
-# to that team's namespace) plus the 1:1 app-project-to-harness-project
-# mapping below: a user scoped to the "web" Harness project can only
-# operate within the "web" Argo project, whose only allowed destination
-# namespace is "web".
+# each team: own namespace, own Harness project, own Argo CD project scoped to that namespace, mapped 1:1 to the Harness project.
 
 resource "kubernetes_namespace" "this" {
   metadata {
@@ -27,7 +17,7 @@ resource "harness_platform_project" "this" {
   tags        = ["source:opentofu", "team:${var.team}"]
 }
 
-# Argo CD project scoping the team's applications to their namespace only.
+# Argo CD project scoping this team's applications to their namespace only.
 resource "harness_platform_gitops_app_project" "this" {
   org_id     = var.org_id
   project_id = harness_platform_project.this.id
@@ -49,12 +39,8 @@ resource "harness_platform_gitops_app_project" "this" {
         name      = var.cluster_name
       }
 
-      # deliberately no cluster_resource_whitelist block: an empty whitelist
-      # means no cluster-scoped resources (namespaces are managed by tofu,
-      # not argo) can be synced by this project.
-
-      # prevent a team's applications from touching quota/network guardrails
-      # in their own namespace via a synced manifest.
+      # no cluster_resource_whitelist block: empty whitelist blocks all cluster-scoped resources.
+      # block quota/network guardrails from being touched by synced manifests.
       namespace_resource_blacklist {
         group = ""
         kind  = "ResourceQuota"
@@ -71,9 +57,7 @@ resource "harness_platform_gitops_app_project" "this" {
   }
 }
 
-# ties this Argo project to this Harness project: applications/appsets
-# created under other Harness projects cannot reference the "web" (etc)
-# Argo project, and vice versa.
+# ties this Argo project 1:1 to this Harness project - other projects can't reference it.
 resource "harness_platform_gitops_app_project_mapping" "this" {
   org_id     = var.org_id
   project_id = harness_platform_project.this.id

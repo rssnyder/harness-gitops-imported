@@ -1,6 +1,4 @@
-# one module instance per example team - each is fully isolated to its own
-# namespace via the module's Argo project (destinations restricted to that
-# namespace) mapped 1:1 to the team's Harness project.
+# one module instance per example team, isolated to its own namespace via a namespace-scoped Argo project.
 module "team" {
   source   = "./modules/team_project"
   for_each = var.teams

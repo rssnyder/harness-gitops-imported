@@ -1,9 +1,4 @@
-# Harness allows a given server URL to be registered as a GitOps Cluster
-# only once per agent, so the single physical in-cluster the agent runs in
-# is registered exactly once here, at org scope (no project_id - it isn't
-# owned by any one team). Namespace isolation between teams is enforced by
-# each team's AppProject `destinations` block (see
-# modules/team_project/main.tf), not by this cluster entity.
+# registered once, at org scope - Harness rejects registering the same server URL more than once per agent.
 resource "harness_platform_gitops_cluster" "in_cluster" {
   identifier   = "in_cluster"
   org_id       = harness_platform_organization.gitops.id

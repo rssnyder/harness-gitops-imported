@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
-# usage: source ./scripts/load-env.sh
-#
-# ./.env uses HARNESS_ACCOUNT_ID and (typo'd) HARNESS_PLAFORM_API_KEY. the
-# harness terraform/opentofu provider auto-detects credentials from
-# HARNESS_ACCOUNT_ID and HARNESS_PLATFORM_API_KEY (correct spelling), so this
-# just sources .env and re-exports the corrected name.
+# usage: source ./scripts/load-env.sh - fixes the .env typo (HARNESS_PLAFORM_API_KEY) into HARNESS_PLATFORM_API_KEY.
 set -a
 # shellcheck disable=SC1091
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/.env"

@@ -39,9 +39,7 @@ variable "agent_id" {
   default     = "hrns_argocd"
 }
 
-# one namespace + harness project + argo project is created per team,
-# isolated from the others: destinations/cluster registration are scoped to
-# that team's own namespace only.
+# each gets its own namespace, Harness project, and Argo CD project.
 variable "teams" {
   description = "Example teams to provision. Each gets its own namespace, Harness project, and Argo CD project scoped to that namespace."
   type        = set(string)
