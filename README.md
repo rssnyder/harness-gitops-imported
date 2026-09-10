@@ -11,7 +11,7 @@ the `helm` and `kubernetes` providers.
 
 ```
 org: gitops
-  gitops agent "hrns_argocd" (CONNECTED_ARGO_PROVIDER / BYOA)
+  gitops agent "hrns_argocd" (MANAGED_ARGO_PROVIDER / BYOA)
     -> wraps the pre-existing argocd install in ns "argocd"
        (only the harness "gitops-agent" component from the gitops-helm
         chart is installed; argo-cd.enabled=false so the existing argocd

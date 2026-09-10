@@ -1,10 +1,10 @@
-# imports the existing argocd install as a BYOA agent (CONNECTED_ARGO_PROVIDER), vs MANAGED_ARGO_PROVIDER which would deploy a fresh argocd stack.
+# BYOA agent wrapping the existing argocd install. CONNECTED_ARGO_PROVIDER is deprecated per harness eng - MANAGED_ARGO_PROVIDER is now used for BYOA too (deployment mode is controlled by argo-cd.enabled below, not this type value).
 resource "harness_platform_gitops_agent" "hrns" {
   identifier  = var.agent_id
   org_id      = harness_platform_organization.gitops.id
   name        = var.agent_id
   description = "BYOA agent wrapping the pre-existing argocd install in the hrns talos cluster"
-  type        = "CONNECTED_ARGO_PROVIDER"
+  type        = "MANAGED_ARGO_PROVIDER"
   operator    = "ARGO"
 
   metadata {
